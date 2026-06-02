@@ -1,9 +1,43 @@
-import { CreateUserInput, User } from "../types/types";
+import { CreateUserInput, User, UserRow } from "../types/types";
+
+import { db } from "../database/knex";
+
+
+const mapUserRowToUser = (row: UserRow): User => ({
+   id: row.id,
+   firstName: row.first_name,
+   lastName: row.last_name,
+   email: row.email,
+   phone: row.phone,
+   bvn: row.bvn,
+   createdAt: row.created_at,
+   updatedAt: row.updated_at,
+});
 
 export const createUser = async (input: CreateUserInput): Promise<User> => {
-   throw new Error("Not implemented yet");
+   const [id] = await db<UserRow>('users').insert({
+      first_name: input.firstName,
+      last_name: input.lastName,
+      email: input.email,
+      phone: input.phone,
+      bvn: input.bvn,
+   });
+
+   const createdUser = await db<UserRow>('users').where({ id }).first();
+
+   if (!createdUser) {
+      throw new Error("User creation failed");
+   }
+
+   return mapUserRowToUser(createdUser);
 };
 
 export const findUserByEmail = async (email: string): Promise<User | null> => {
-   throw new Error("Not implemented yet");
+   const row = await db<UserRow>("users").where({ email }).first();
+
+   if (!row) {
+      return null;
+   }
+
+   return mapUserRowToUser(row);
 };

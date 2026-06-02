@@ -51,3 +51,23 @@ export type KarmaCheckInput = {
 export type KarmaCheckResult = {
    isBlacklisted: boolean;
 };
+
+// Database row types (if needed for direct DB interactions)
+export type UserRow = {
+   id: number;
+   first_name: string;
+   last_name: string;
+   email: string;
+   phone: string;
+   bvn: string;
+   created_at: Date;
+   updated_at: Date;
+};
+
+export type WalletRow = {
+   id: number;
+   user_id: number;
+   balance: number;
+   created_at: Date;
+   updated_at: Date;
+};
