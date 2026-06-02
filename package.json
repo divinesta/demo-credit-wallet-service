@@ -9,7 +9,7 @@
     "start": "node dist/src/server.js",
     "test": "jest",
     "test:watch": "jest --watch",
-    "knex": "knex --knexfile knexfile.ts"
+    "knex": "knex --knexfile src/database/knexfile.ts"
   },
   "keywords": [],
   "author": "",
