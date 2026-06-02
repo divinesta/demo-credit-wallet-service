@@ -1,5 +1,8 @@
-import { CreateUserInput, User } from "../types/types";
+import { db } from "../database/knex";
 import { checkKarmaBlacklist } from "./karma.service";
+import { CreateUserInput, User } from "../types/types";
+import { createUser } from "../repositories/user.repository";
+import { createWalletForUser } from "../repositories/wallet.repository";
 
 export const registerUser = async (input: CreateUserInput): Promise<User> => {
    const karmaResult = await checkKarmaBlacklist({
@@ -12,5 +15,9 @@ export const registerUser = async (input: CreateUserInput): Promise<User> => {
       throw new Error("User is blacklisted and cannot be onboarded");
    }
 
-   throw new Error("User creation not implemented yet");
+   return db.transaction(async (trx) => {
+      const user = await createUser(input, trx);
+      await createWalletForUser(user.id, trx);
+      return user;
+   });
 };

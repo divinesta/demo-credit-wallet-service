@@ -1,3 +1,7 @@
+import type { Knex } from "knex";
+
+export type DatabaseClient = Knex | Knex.Transaction;
+
 export type User = {
    id: number;
    firstName: string;

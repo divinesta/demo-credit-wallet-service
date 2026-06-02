@@ -1,4 +1,4 @@
-import { CreateUserInput, User, UserRow } from "../types/types";
+import { CreateUserInput, DatabaseClient, User, UserRow } from "../types/types";
 
 import { db } from "../database/knex";
 
@@ -14,8 +14,12 @@ const mapUserRowToUser = (row: UserRow): User => ({
    updatedAt: row.updated_at,
 });
 
-export const createUser = async (input: CreateUserInput): Promise<User> => {
-   const [id] = await db<UserRow>('users').insert({
+export const createUser = async (
+   input: CreateUserInput,
+   database: DatabaseClient = db
+   ): Promise<User> => {
+   
+      const [id] = await database<UserRow>('users').insert({
       first_name: input.firstName,
       last_name: input.lastName,
       email: input.email,
@@ -23,7 +27,7 @@ export const createUser = async (input: CreateUserInput): Promise<User> => {
       bvn: input.bvn,
    });
 
-   const createdUser = await db<UserRow>('users').where({ id }).first();
+   const createdUser = await database<UserRow>('users').where({ id }).first();
 
    if (!createdUser) {
       throw new Error("User creation failed");

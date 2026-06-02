@@ -1,5 +1,5 @@
 import { db } from "../database/knex";
-import { Wallet, WalletRow } from "../types/types";
+import { DatabaseClient, Wallet, WalletRow } from "../types/types";
 
 const mapWalletRowToWallet = (row: WalletRow): Wallet => ({
    id: row.id,
@@ -9,13 +9,17 @@ const mapWalletRowToWallet = (row: WalletRow): Wallet => ({
    updatedAt: row.updated_at,
 });
 
-export const createWalletForUser = async (userId: number): Promise<Wallet> => {
-   const [id] = await db<WalletRow>('wallets').insert({
+export const createWalletForUser = async (
+   userId: number,
+   database: DatabaseClient = db
+): Promise<Wallet> => {
+
+   const [id] = await database<WalletRow>('wallets').insert({
       user_id: userId,
       balance: 0,
    });
 
-   const createdWallet = await db<WalletRow>('wallets').where({ id }).first();
+   const createdWallet = await database<WalletRow>('wallets').where({ id }).first();
 
    if (!createdWallet) {
       throw new Error("Wallet creation failed");
