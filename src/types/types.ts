@@ -42,3 +42,12 @@ export type WalletTransaction = {
    updatedAt: Date;
 };
 
+export type KarmaCheckInput = {
+   email: string;
+   phone: string;
+   bvn: string;
+};
+
+export type KarmaCheckResult = {
+   isBlacklisted: boolean;
+};
