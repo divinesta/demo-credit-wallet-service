@@ -1,6 +1,6 @@
 import { db } from "../database/knex";
 import { checkKarmaBlacklist } from "./karma.service";
-import { CreateUserInput, User } from "../types/types";
+import { CreateUserInput, User } from "../utils/types";
 import { createUser } from "../repositories/user.repository";
 import { createWalletForUser } from "../repositories/wallet.repository";
 
