@@ -1,6 +1,13 @@
 import type { Knex } from "knex";
+import { Request } from "express";
 
 export type DatabaseClient = Knex | Knex.Transaction;
+
+export type AuthenticatedRequest = Request & {
+   user: {
+      id: number;
+   }
+}
 
 export type User = {
    id: number;
@@ -75,3 +82,4 @@ export type WalletRow = {
    created_at: Date;
    updated_at: Date;
 };
+
