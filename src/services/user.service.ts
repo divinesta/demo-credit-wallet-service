@@ -3,6 +3,7 @@ import { checkKarmaBlacklist } from "./karma.service";
 import { CreateUserInput, User } from "../utils/types";
 import { createUser } from "../repositories/user.repository";
 import { createWalletForUser } from "../repositories/wallet.repository";
+import { AppError } from "../utils/app-error";
 
 export const registerUser = async (input: CreateUserInput): Promise<User> => {
    const karmaResult = await checkKarmaBlacklist({
@@ -12,7 +13,7 @@ export const registerUser = async (input: CreateUserInput): Promise<User> => {
    });
 
    if (karmaResult.isBlacklisted) {
-      throw new Error("User is blacklisted and cannot be onboarded");
+      throw new AppError(403, "User is blacklisted and cannot be onboarded");
    }
 
    return db.transaction(async (trx) => {

@@ -1,13 +1,14 @@
 import { db } from "../database/knex";
 import { createTransaction } from "../repositories/transaction.repository";
 import { findWalletByUserId, increaseWalletBalance, decreaseWalletBalance } from "../repositories/wallet.repository";
+import { AppError } from "../utils/app-error";
 
 export const fundWallet = async (userId: number, amount: number) => {
    return db.transaction(async (trx) => {
       const wallet = await findWalletByUserId(userId, trx);
 
       if (!wallet) {
-      throw new Error("Wallet not found");
+         throw new AppError(404, "Wallet not found");
       }
 
       await increaseWalletBalance(wallet.id, amount, trx);
@@ -36,11 +37,11 @@ export const withdrawWallet = async (userId: number, amount: number) => {
       const wallet = await findWalletByUserId(userId, trx);
 
       if (!wallet) {
-         throw new Error("Wallet not found");
+         throw new AppError(404, "Wallet not found");
       }
 
       if (wallet.balance < amount) {
-         throw new Error("Insufficient wallet balance");
+         throw new AppError(400, "Insufficient wallet balance");
       }
 
       await decreaseWalletBalance(wallet.id, amount, trx);
@@ -62,7 +63,7 @@ export const withdrawWallet = async (userId: number, amount: number) => {
          newBalance: wallet.balance - amount,
       }
    });
-}
+};
 
 export const transferWallet = async (
    senderUserId: number,
@@ -75,19 +76,19 @@ export const transferWallet = async (
       const receiverWallet = await findWalletByUserId(receiverUserId, trx);
 
       if (!senderWallet) {
-         throw new Error("Sender wallet not found");
+         throw new AppError(404, "Sender wallet not found");
       }
 
       if (!receiverWallet) {
-         throw new Error("Receiver wallet not found");
+         throw new AppError(404, "Receiver wallet not found");
       }
       
       if (senderWallet.id === receiverWallet.id) {
-         throw new Error("Cannot transfer to the same wallet");
+         throw new AppError(400, "Cannot transfer to the same wallet");
       }
       
       if (senderWallet.balance < amount) {
-         throw new Error("Insufficient wallet balance");
+         throw new AppError(400, "Insufficient wallet balance");
       }
       
       await decreaseWalletBalance(senderWallet.id, amount, trx);
