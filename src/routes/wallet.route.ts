@@ -1,12 +1,18 @@
 import { Router } from "express";
 
-import { fundUserWallet, withdrawUserWallet, transferFromUserWallet } from "../controllers/wallet.controller";
+import { fundUserWallet, getMyWallet, withdrawUserWallet, transferFromUserWallet } from "../controllers/wallet.controller";
 import { fundWalletSchema, withdrawWalletSchema, transferWalletSchema } from "../utils/validation";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { validate } from "../middlewares/validation.middleware";
 import { asyncHandler } from "../utils/async-handler";
 
 export const walletRouter = Router();
+
+walletRouter.get(
+   "/me",
+   authMiddleware,
+   asyncHandler(getMyWallet)
+);
 
 walletRouter.post(
    "/fund", 

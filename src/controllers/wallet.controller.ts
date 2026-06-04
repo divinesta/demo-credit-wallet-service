@@ -1,7 +1,16 @@
 import { Response } from "express";
 
-import { fundWallet, withdrawWallet, transferWallet } from "../services/wallet.service";
+import { fundWallet, getCurrentUserWallet, withdrawWallet, transferWallet } from "../services/wallet.service";
 import { AuthenticatedRequest } from "../utils/types";
+
+export const getMyWallet = async (req: AuthenticatedRequest, res: Response) => {
+   const wallet = await getCurrentUserWallet(req.user.id);
+
+   res.status(200).json({
+      message: "Wallet retrieved successfully",
+      data: wallet,
+   });
+};
 
 export const fundUserWallet = async (req: AuthenticatedRequest, res:Response) => {
    const result = await fundWallet(req.user.id, req.body.amount);

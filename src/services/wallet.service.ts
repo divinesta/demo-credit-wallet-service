@@ -3,6 +3,17 @@ import { createTransaction } from "../repositories/transaction.repository";
 import { findWalletByUserId, increaseWalletBalance, decreaseWalletBalance } from "../repositories/wallet.repository";
 import { AppError } from "../utils/app-error";
 
+
+export const getCurrentUserWallet = async (userId: number) => {
+   const wallet = await findWalletByUserId(userId);
+
+   if (!wallet) {
+      throw new AppError(404, "Wallet not found");
+   }
+
+   return wallet;
+};
+
 export const fundWallet = async (userId: number, amount: number) => {
    return db.transaction(async (trx) => {
       const wallet = await findWalletByUserId(userId, trx);
