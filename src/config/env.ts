@@ -7,5 +7,9 @@ export const env = {
       user: process.env.DB_USER ?? "root",
       password: process.env.DB_PASSWORD ?? "",
       name: process.env.DB_NAME ?? "demo_credit_wallet",
-   }
+   },
+   adjutor: {
+      baseUrl: process.env.ADJUTOR_BASE_URL ?? "https://adjutor.lendsqr.com/v2",
+      apiKey: process.env.ADJUTOR_API_KEY ?? "",
+   },
 };
