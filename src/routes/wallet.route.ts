@@ -20,4 +20,4 @@ walletRouter.post(
    authMiddleware,
    validate(withdrawWalletSchema),
    asyncHandler(withdrawUserWallet)
-)
+);

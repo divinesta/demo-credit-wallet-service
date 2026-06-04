@@ -59,7 +59,28 @@ export const withdrawWallet = async (userId: number, amount: number) => {
       return {
          walletId: wallet.id,
          userId: wallet.userId,
-         newBalnce: wallet.balance - amount,
+         newBalance: wallet.balance - amount,
       }
    });
 }
+
+export const transferWallet = async (
+   senderUserId: number,
+   receiverUserId: number,
+   amount: number
+) => {
+   return db.transaction(async (trx) => {
+      // Start transaction
+      // Find sender wallet
+      // Find receiver wallet
+      // Reject if sender wallet is missing
+      // Reject if receiver wallet is missing
+      // Reject if sender and receiver are same wallet
+      // Reject if sender balance is too low
+      // Decrease sender wallet
+      // Increase receiver wallet
+      // Create transfer_debit transaction
+      // Create transfer_credit transaction
+      // Return new sender balance
+   });
+};

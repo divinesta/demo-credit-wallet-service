@@ -18,5 +18,5 @@ export const withdrawUserWallet = async (req: AuthenticatedRequest, res: Respons
    res.status(200).json({
       message: "Wallet withdrawal successful",
       data: result
-   })
+   });
 };
