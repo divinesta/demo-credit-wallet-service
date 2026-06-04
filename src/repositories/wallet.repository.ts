@@ -39,3 +39,13 @@ export const increaseWalletBalance = async (
       .where({ id: walletId })
       .increment("balance", amount);
 };
+
+export const decreaseWalletBalance = async (
+   walletId: number,
+   amount: number,
+   database: DatabaseClient = db
+): Promise<void> => {
+   await database("wallets")
+      .where({ id: walletId })
+      .decrement("balance", amount);
+}
