@@ -19,7 +19,7 @@
     "src/**/*.ts",
     "tests/**/*.ts",
     "knexfile.ts",
-    "jest.config.ts"
+    "jest.config.js"
   ],
   "exclude": [
     "node_modules",
