@@ -19,5 +19,5 @@ export const withdrawWalletSchema = fundWalletSchema;
 
 export const transferWalletSchema = z.object({
    receiverUserId: z.number().int().positive("Invalid user id"),
-   amount: z.number().positive("amount must be greater then zero"),
-})
+   amount: z.number().positive("amount must be greater than zero"),
+});

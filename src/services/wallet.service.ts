@@ -70,15 +70,29 @@ export const transferWallet = async (
    amount: number
 ) => {
    return db.transaction(async (trx) => {
-      // Start transaction
-      // Find sender wallet
-      // Find receiver wallet
-      // Reject if sender wallet is missing
-      // Reject if receiver wallet is missing
-      // Reject if sender and receiver are same wallet
-      // Reject if sender balance is too low
-      // Decrease sender wallet
-      // Increase receiver wallet
+      
+      const sendWallet = await findWalletByUserId(senderUserId, trx);
+      const receiverWallet = await findWalletByUserId(receiverUserId, trx);
+
+      if (!sendWallet) {
+         throw new Error("Sender wallet not found");
+      }
+
+      if (!receiverWallet) {
+         throw new Error("Receiver wallet not found");
+      }
+      
+      if (sendWallet.id === receiverWallet.id) {
+         throw new Error("Cannot transfer to the same wallet");
+      }
+      
+      if (sendWallet.balance <  amount) {
+         throw new Error("Insufficient funds");
+      }
+      
+      await decreaseWalletBalance(sendWallet.id, amount, trx);
+      await increaseWalletBalance(receiverWallet.id, amount, trx);
+
       // Create transfer_debit transaction
       // Create transfer_credit transaction
       // Return new sender balance
