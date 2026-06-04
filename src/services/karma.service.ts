@@ -22,18 +22,26 @@ const getPrimaryIdentity = (input: KarmaCheckInput): string => {
 };
 
 export const checkKarmaBlacklist = async (input: KarmaCheckInput): Promise<KarmaCheckResult> => {
-   if (!env.adjutor.apiKey) {
+   const apiKey = process.env.ADJUTOR_API_KEY ?? env.adjutor.apiKey;
+
+   if (!apiKey) {
       throw new AppError(503, "Karma blacklist service is not configured");
    }
 
    const identity = getPrimaryIdentity(input);
-   const response = await fetch(buildKarmaUrl(identity), {
-      method: "GET",
-      headers: {
-         Authorization: `Bearer ${env.adjutor.apiKey}`,
-         Accept: "application/json",
-      },
-   });
+   let response: Response;
+
+   try {
+      response = await fetch(buildKarmaUrl(identity), {
+         method: "GET",
+         headers: {
+            Authorization: `Bearer ${apiKey}`,
+            Accept: "application/json",
+         },
+      });
+   } catch {
+      throw new AppError(503, "Karma blacklist service is unavailable");
+   }
 
    if (response.status === 404) {
       return {

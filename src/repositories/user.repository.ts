@@ -40,3 +40,17 @@ export const findUserByEmail = async (email: string): Promise<User | null> => {
 
    return mapUserRowToUser(row);
 };
+
+export const findUserByEmailPhoneOrBvn = async (input: Pick<CreateUserInput, "email" | "phone" | "bvn">): Promise<User | null> => {
+   const row = await db<UserRow>("users")
+      .where({ email: input.email })
+      .orWhere({ phone: input.phone })
+      .orWhere({ bvn: input.bvn })
+      .first();
+
+   if (!row) {
+      return null;
+   }
+
+   return mapUserRowToUser(row);
+};
