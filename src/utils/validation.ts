@@ -14,3 +14,5 @@ export const createUserSchema = z.object({
 export const fundWalletSchema = z.object({
    amount: z.number().positive("amount must be greater than zero"),
 });
+
+export const withdrawWalletSchema = fundWalletSchema;

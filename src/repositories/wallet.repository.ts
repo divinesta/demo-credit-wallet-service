@@ -45,7 +45,7 @@ export const decreaseWalletBalance = async (
    amount: number,
    database: DatabaseClient = db
 ): Promise<void> => {
-   await database("wallets")
+   await database<WalletRow>("wallets")
       .where({ id: walletId })
       .decrement("balance", amount);
 }

@@ -1,10 +1,10 @@
 import { Router } from "express";
 
-import { fundUserWallet } from "../controllers/wallet.controller";
+import { fundUserWallet, withdrawUserWallet } from "../controllers/wallet.controller";
+import { fundWalletSchema, withdrawWalletSchema } from "../utils/validation";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { validate } from "../middlewares/validation.middleware";
 import { asyncHandler } from "../utils/async-handler";
-import { fundWalletSchema } from "../utils/validation";
 
 export const walletRouter = Router();
 
@@ -14,3 +14,10 @@ walletRouter.post(
    validate(fundWalletSchema), 
    asyncHandler(fundUserWallet)
 );
+
+walletRouter.post(
+   "/withdraw",
+   authMiddleware,
+   validate(withdrawWalletSchema),
+   asyncHandler(withdrawUserWallet)
+)
