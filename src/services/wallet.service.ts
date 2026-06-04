@@ -71,10 +71,10 @@ export const transferWallet = async (
 ) => {
    return db.transaction(async (trx) => {
       
-      const sendWallet = await findWalletByUserId(senderUserId, trx);
+      const senderWallet = await findWalletByUserId(senderUserId, trx);
       const receiverWallet = await findWalletByUserId(receiverUserId, trx);
 
-      if (!sendWallet) {
+      if (!senderWallet) {
          throw new Error("Sender wallet not found");
       }
 
@@ -82,19 +82,48 @@ export const transferWallet = async (
          throw new Error("Receiver wallet not found");
       }
       
-      if (sendWallet.id === receiverWallet.id) {
+      if (senderWallet.id === receiverWallet.id) {
          throw new Error("Cannot transfer to the same wallet");
       }
       
-      if (sendWallet.balance <  amount) {
-         throw new Error("Insufficient funds");
+      if (senderWallet.balance < amount) {
+         throw new Error("Insufficient wallet balance");
       }
       
-      await decreaseWalletBalance(sendWallet.id, amount, trx);
+      await decreaseWalletBalance(senderWallet.id, amount, trx);
       await increaseWalletBalance(receiverWallet.id, amount, trx);
 
-      // Create transfer_debit transaction
-      // Create transfer_credit transaction
-      // Return new sender balance
+      const reference = `transfer-${Date.now()}-${senderWallet.id}-${receiverWallet.id}`;
+
+      await createTransaction(
+         {
+            walletId: senderWallet.id,
+            relatedWalletId: receiverWallet.id,
+            type: "transfer_debit",
+            amount,
+            reference: `${reference}-debit`,
+            narration: "Wallet transfer debit",
+         },
+         trx
+      );
+
+      await createTransaction(
+         {
+            walletId: receiverWallet.id,
+            relatedWalletId: senderWallet.id,
+            type: "transfer_credit",
+            amount,
+            reference: `${reference}-credit`,
+            narration: "Wallet transfer credit"
+         },
+         trx
+      );
+
+      return {
+         senderWalletId: senderWallet.id,
+         receiverWalletId: receiverWallet.id,
+         amount,
+         senderNewBalance: senderWallet.balance - amount,
+      }
    });
 };
