@@ -18,7 +18,7 @@ const config: Record<string, Knex.Config> = {
       client: 'mysql2',
       connection: connection(process.env.DB_NAME),
       migrations: {
-         directory: './src/database/migrations',
+         directory: './migrations',
          extension: 'ts',
       },
    },
@@ -26,7 +26,7 @@ const config: Record<string, Knex.Config> = {
       client: 'mysql2',
       connection: connection(process.env.TEST_DB_NAME ?? process.env.DB_NAME),
       migrations: {
-         directory: './src/database/migrations',
+         directory: './migrations',
          extension: 'ts',
       },
    },
