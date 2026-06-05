@@ -1,6 +1,10 @@
 import { db } from "../database/knex";
 import { createTransaction } from "../repositories/transaction.repository";
-import { findWalletByUserId, increaseWalletBalance, decreaseWalletBalance } from "../repositories/wallet.repository";
+import {
+   findWalletByUserId,
+   increaseWalletBalance,
+   decreaseWalletBalance,
+} from "../repositories/wallet.repository";
 import { AppError } from "../utils/app-error";
 
 
@@ -16,7 +20,7 @@ export const getCurrentUserWallet = async (userId: number) => {
 
 export const fundWallet = async (userId: number, amount: number) => {
    return db.transaction(async (trx) => {
-      const wallet = await findWalletByUserId(userId, trx);
+      const wallet = await findWalletByUserId(userId, trx, true);
 
       if (!wallet) {
          throw new AppError(404, "Wallet not found");
@@ -45,7 +49,7 @@ export const fundWallet = async (userId: number, amount: number) => {
 
 export const withdrawWallet = async (userId: number, amount: number) => {
    return db.transaction(async (trx) => {
-      const wallet = await findWalletByUserId(userId, trx);
+      const wallet = await findWalletByUserId(userId, trx, true);
 
       if (!wallet) {
          throw new AppError(404, "Wallet not found");
@@ -82,9 +86,12 @@ export const transferWallet = async (
    amount: number
 ) => {
    return db.transaction(async (trx) => {
-      
-      const senderWallet = await findWalletByUserId(senderUserId, trx);
-      const receiverWallet = await findWalletByUserId(receiverUserId, trx);
+      const [firstUserId, secondUserId] = [senderUserId, receiverUserId].sort((a, b) => a - b);
+      const firstWallet = await findWalletByUserId(firstUserId, trx, true);
+      const secondWallet = await findWalletByUserId(secondUserId, trx, true);
+      const lockedWallets = [firstWallet, secondWallet].filter((wallet) => wallet !== null);
+      const senderWallet = lockedWallets.find((wallet) => wallet.userId === senderUserId);
+      const receiverWallet = lockedWallets.find((wallet) => wallet.userId === receiverUserId);
 
       if (!senderWallet) {
          throw new AppError(404, "Sender wallet not found");

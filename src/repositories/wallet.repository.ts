@@ -24,8 +24,18 @@ export const createWalletForUser = async (userId: number, database: DatabaseClie
    return mapWalletRowToWallet(createdWallet);
 };
 
-export const findWalletByUserId = async (userId: number, database: DatabaseClient = db): Promise<Wallet | null> => {
-   const wallet = await database<WalletRow>("wallets").where({ user_id: userId }).first();
+export const findWalletByUserId = async (
+   userId: number,
+   database: DatabaseClient = db,
+   lockForUpdate = false
+): Promise<Wallet | null> => {
+   const query = database<WalletRow>("wallets").where({ user_id: userId });
+
+   if (lockForUpdate) {
+      query.forUpdate();
+   }
+
+   const wallet = await query.first();
 
    return wallet ? mapWalletRowToWallet(wallet) : null;
 };
