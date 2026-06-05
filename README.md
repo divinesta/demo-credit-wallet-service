@@ -364,14 +364,4 @@ The test suite covers:
 
 ## Deployment
 
-Deployment URL:
-
-```txt
-TODO: Add deployed API URL
-```
-
-Target naming format from the assessment:
-
-```txt
-https://<candidate-name>-lendsqr-be-test.<cloud-platform-domain>
-```
+Deployment URL: <https://emilola-divine-lendsqr-be-test.up.railway.app>
