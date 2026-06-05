@@ -70,7 +70,7 @@ erDiagram
 
    wallets {
       int id PK
-      int user_id FK_UK
+      int user_id FK
       bigint balance
       timestamp created_at
       timestamp updated_at
@@ -79,7 +79,7 @@ erDiagram
    transactions {
       int id PK
       int wallet_id FK
-      int related_wallet_id FK_NULL
+      int related_wallet_id FK
       string type
       bigint amount
       string reference UK
